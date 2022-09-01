@@ -36,6 +36,16 @@
 
                 context_menu.style.top = (rect.bottom + window.scrollY) + "px";
                 context_menu.style.left = (rect.right - context_menu.clientWidth) + "px";
+            },
+
+            new_element(type:string) {
+                if (type == "default"){
+                    let instance:any; 
+                    let modulePromise = import('./inline-components/Default.vue'); 
+                    modulePromise.then((componentModule) => { instance.value = componentModule.default; });
+                }
+            }
+                
             }
         }
     };
@@ -49,6 +59,9 @@
         <textarea placeholder="Start typing here, or use // to pull up the elements window." class="body-textarea" @input="handle_text_change($event)"></textarea>
 
     </div>
+
+    <div id="new-element-area" @click="new_element()"></div>
+    
 
     
 </template>
@@ -90,7 +103,11 @@
         margin-top: 15px;
 
         width: 100%;
+    }
 
+    #new-element-area {
+        width: 100%;
+        height: 100px;
     }
 </style>
     
