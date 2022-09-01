@@ -1,7 +1,3 @@
-<script lang="ts">
-
-</script>
-
 <template>
     <div id="context-menu" class="hide">
         cancer
