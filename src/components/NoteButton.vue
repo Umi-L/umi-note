@@ -1,30 +1,30 @@
 <template>
-    <button class="note-button">
-        click
-    </button>
+  <button class="note-button">
+    click
+  </button>
 </template>
 
 <style>
-    .note-button{
-        height: 3em;
-        width: 100%;
-        padding-top: 1em;
-        padding-bottom: 1em;
+.note-button {
+  height: 3em;
+  width: 100%;
+  padding-top: 1em;
+  padding-bottom: 1em;
 
-        background-color: var(--dark);
-        
-        border: none;
+  background-color: var(--dark);
 
-        border-top: 1px solid var(--light1);
-        /* border-bottom: 1px solid var(--light1); */
+  border: none;
 
-        color: var(--text);
+  border-top: 1px solid var(--light1);
+  /* border-bottom: 1px solid var(--light1); */
 
-        transition-duration: 0.2s;
+  color: var(--text);
 
-    }
+  transition-duration: 0.2s;
 
-    .note-button:hover{
-        background-color: var(--light1);
-    }
+}
+
+.note-button:hover {
+  background-color: var(--light1);
+}
 </style>
