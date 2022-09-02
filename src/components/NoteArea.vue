@@ -1,11 +1,20 @@
 <script lang="ts">
     import ContextMenu from './ContextMenu.vue';
+    import Paragraph from "./sub-components/Paragraph.vue"
 
     export default {
 
         components: {
-            ContextMenu
+            ContextMenu,
+            Paragraph
         },
+
+        data(){
+            return {
+                sub_components: ["paragraph"]
+            }
+        },
+
         methods: {
             say(message:string) {
                 alert(message)
@@ -39,13 +48,9 @@
             },
 
             new_element(type:string) {
-                if (type == "default"){
-                    let instance:any; 
-                    let modulePromise = import('./inline-components/Default.vue'); 
-                    modulePromise.then((componentModule) => { instance.value = componentModule.default; });
-                }
-            }
-                
+
+                //@ts-ignore -- odd bug that makes ts assume "this.sub_components" doesn't exist
+                this.sub_components.push(type);
             }
         }
     };
@@ -56,11 +61,16 @@
 
     <div class="note-body">
         <textarea placeholder="Title" class="title-textarea" @input="handle_text_change($event)"></textarea>
-        <textarea placeholder="Start typing here, or use // to pull up the elements window." class="body-textarea" @input="handle_text_change($event)"></textarea>
+        <!-- <textarea placeholder="Start typing here, or use // to pull up the elements window." class="body-textarea" @input="handle_text_change($event)"></textarea> -->
 
+        <template v-for="component in sub_components">
+            <template v-if="component == 'paragraph'">
+                <Paragraph></Paragraph>
+            </template>
+        </template>
     </div>
 
-    <div id="new-element-area" @click="new_element()"></div>
+    <div id="new-element-area" @click="new_element('paragraph')"></div>
     
 
     
