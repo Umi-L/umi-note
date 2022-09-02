@@ -13,21 +13,19 @@ export default {
 
   data() {
     return {
-      sub_components: ["title", "paragraph"]
+      // array of component types and data can be used to reconstruct any note.
+      sub_components: [{"title":""}, {"paragraph":""}]
     }
   },
 
   methods: {
-    say(message: string) {
-      alert(message)
-    },
-
-    add_element(type: string) {
+    add_element(type: string, data:any = undefined) {
 
       //@ts-ignore -- odd bug that makes ts assume "this.sub_components" doesn't exist
-      this.sub_components.push(type);
+      this.sub_components.push({[type]: data});
 
-      console.log(`added ${type}`);
+      console.log(`added ${type} data passed was:`);
+      console.log(data);
     },
 
     convert_element_to_element(type: string, index: number) {
@@ -37,6 +35,11 @@ export default {
 
       //@ts-ignore -- see above
       this.sub_components[index] = type;
+    },
+
+    remove_element(index:number){
+      //@ts-ignore -- see above
+      this.sub_components.pop(index);
     },
 
     open_context_menu(elemenent: any) {
@@ -61,17 +64,25 @@ export default {
 
     <template v-for="(component, indx) in sub_components">
 
-      <template v-if="component == 'title'">
+      {{Object.keys(component)[0]}}
+
+      <template v-if="Object.keys(component)[0] === 'title'">
         <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
-              @open_context_menu="open_context_menu" :index="indx" :size="2"></Text>
+              @open_context_menu="open_context_menu" :index="indx" :size="2"
+              :value="component[Object.keys(component)[0]]"
+              :type="Object.keys(component)[0]"
+              @remove_element="remove_element"></Text>
       </template>
 
-      <template v-if="component == 'paragraph'">
+      <template v-if="Object.keys(component)[0] === 'paragraph'">
         <Text @convert_element_to_element="convert_element_to_element" @add_element="add_element"
-              @open_context_menu="open_context_menu" :index="indx" :size="1"></Text>
+              @open_context_menu="open_context_menu" :index="indx" :size="1"
+              :value="component[Object.keys(component)[0]]"
+              :type="Object.keys(component)[0]"
+              @remove_element="remove_element"></Text>
       </template>
 
-      <template v-else-if="component == 'divider'">
+      <template v-else-if="Object.keys(component)[0] === 'divider'">
         <Divider :index="indx"></Divider>
       </template>
     </template>

@@ -5,7 +5,8 @@ export default {
     index: Number,
     size: Number,
     placeholder: String,
-    value: String
+    value: String,
+    type: String
   },
 
   methods: {
@@ -23,18 +24,39 @@ export default {
 
       let lines = element.value.split("\n");
 
+      let dividerMacroFound = false;
+
       lines.forEach((line: string) => {
         if (line == "---") {
-
-          if (lines.length == 1) {
-            //@ts-ignore
-            this.$emit('convert_element_to_element', "divider", this.index);
-          } else {
-            //@ts-ignore
-            this.$emit('add_element', "divider");
-          }
+          dividerMacroFound = true;
         }
       });
+
+      if (dividerMacroFound){
+        let splitOnDivider = element.value.split("---");
+
+        //for each segment seperated by div macro
+        for (let i = 0; i < splitOnDivider.length; i++) {
+
+          let block = splitOnDivider[i]
+
+
+          if (block.length > 0) {
+            //@ts-ignore
+            this.$emit('add_element', this.type, block);
+          }
+
+
+          //if on last element don't put divider.
+          if (i + 1 != splitOnDivider.length) {
+            //@ts-ignore
+            this.$emit('add_element', "divider")
+          }
+        }
+
+        //@ts-ignore
+        this.$emit('remove_element', this.index);
+      }
 
       this.auto_grow(element)
     },
@@ -57,7 +79,8 @@ export default {
   <textarea ref="textarea"
             :placeholder="(!this.placeholder) ? 'Start typing here, or use /\/\ to pull up the elements window.' : this.placeholder"
             class="textarea-defaults" @input="handle_text_change($event)"
-            :style="{'font-size': this.size + 'rem'}"></textarea>
+            :style="{'font-size': this.size + 'rem'}"
+            :value="this.value"></textarea>
 </template>
 
 <style>
