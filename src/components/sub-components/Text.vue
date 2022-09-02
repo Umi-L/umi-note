@@ -17,7 +17,7 @@
                     this.$emit('open_context_menu', element);
                 }
 
-                //macro to convert self to devider
+                //macro to convert self to divider
                 
 
                 let lines = element.value.split("\n");
@@ -27,11 +27,11 @@
 
                         if (lines.length == 1){
                             //@ts-ignore
-                            this.$emit('convert_element_to_element', "devider", this.index);
+                            this.$emit('convert_element_to_element', "divider", this.index);
                         }
                         else {
                             //@ts-ignore
-                            this.$emit('add_element', "devider");
+                            this.$emit('add_element', "divider");
                         }
                     }
                 });
@@ -54,7 +54,7 @@
 
 
 <template>
-    <textarea ref="textarea" :placeholder="(this.placeholder) ? 'Start typing here, or use /\/\ to pull up the elements window.' : this.placeholder" class="textarea-defaults" @input="handle_text_change($event)" :style="{'font-size': this.size + 'rem'}"></textarea>
+    <textarea ref="textarea" :placeholder="(!this.placeholder) ? 'Start typing here, or use /\/\ to pull up the elements window.' : this.placeholder" class="textarea-defaults" @input="handle_text_change($event)" :style="{'font-size': this.size + 'rem'}"></textarea>
 </template>
 
 <style>

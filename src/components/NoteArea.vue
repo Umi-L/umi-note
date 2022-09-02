@@ -1,14 +1,14 @@
 <script lang="ts">
     import ContextMenu from './ContextMenu.vue';
     import Text from "./sub-components/Text.vue"
-    import Devider from "./sub-components/Devider.vue"
+    import Divider from "./sub-components/Divider.vue"
 
     export default {
 
         components: {
             ContextMenu,
             Text,
-            Devider
+            Divider
         },
 
         data(){
@@ -22,7 +22,7 @@
                 alert(message)
             },
 
-            new_element(type:string) {
+            add_element(type:string) {
 
                 //@ts-ignore -- odd bug that makes ts assume "this.sub_components" doesn't exist 
                 this.sub_components.push(type);
@@ -59,7 +59,7 @@
     <div class="note-body">
         <!-- render component list -->
 
-        <template v-for="component, indx in sub_components">
+        <template v-for="(component, indx) in sub_components">
 
             <template v-if="component == 'title'">
                 <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element" @open_context_menu="open_context_menu" :index="indx" :size="2"></Text>
@@ -69,13 +69,13 @@
                 <Text @convert_element_to_element="convert_element_to_element" @add_element="add_element" @open_context_menu="open_context_menu" :index="indx" :size="1"></Text>
             </template>
 
-            <template v-else-if="component == 'devider'">
-                <Devider :index="indx"></Devider>
+            <template v-else-if="component == 'divider'">
+                <Divider :index="indx"></Divider>
             </template>
         </template>
     </div>
 
-    <div id="new-element-area" @click="new_element('paragraph')"></div>
+    <div id="new-element-area" @click="add_element('paragraph')"></div>
     
 
     

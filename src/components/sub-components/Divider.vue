@@ -7,11 +7,11 @@
 </script>
 
 <template>
-    <div class="sub-devider"></div>
+    <div class="sub-divider"></div>
 </template>
 
 <style>
-    .sub-devider{
+    .sub-divider{
         width: 100%;
         height: 1px;
         background-color: var(--light1);
