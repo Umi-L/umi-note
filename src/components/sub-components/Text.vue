@@ -70,6 +70,11 @@ export default {
       //@ts-ignore
       return this.$refs.textarea.value;
     }
+  },
+  mounted(){
+    console.log(this.index, "mounted");
+
+    this.auto_grow(this.$refs.textarea);
   }
 }
 </script>

@@ -19,13 +19,10 @@ export default {
   },
 
   methods: {
-    add_element(type: string, data:any = undefined) {
+    add_element(index: number, type: string, data:any = undefined) {
 
       //@ts-ignore -- odd bug that makes ts assume "this.sub_components" doesn't exist
-      this.sub_components.push({[type]: data});
-
-      console.log(`added ${type} data passed was:`);
-      console.log(data);
+      this.sub_components.splice(index, 0, {[type]: data});
     },
 
     convert_element_to_element(type: string, index: number) {
@@ -34,12 +31,14 @@ export default {
       console.log(`converting ${this.sub_components[index]} to ${type} at index ${index}`);
 
       //@ts-ignore -- see above
-      this.sub_components[index] = type;
+      this.sub_components[index] = {[type]:Object.values(this.sub_components[index])[0]};
     },
 
     remove_element(index:number){
       //@ts-ignore -- see above
-      this.sub_components.pop(index);
+      this.sub_components.splice(index, 1);
+
+      console.log(`removed element at ${index}`)
     },
 
     open_context_menu(elemenent: any) {
@@ -63,8 +62,6 @@ export default {
     <!-- render component list -->
 
     <template v-for="(component, indx) in sub_components">
-
-      {{Object.keys(component)[0]}}
 
       <template v-if="Object.keys(component)[0] === 'title'">
         <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
