@@ -36,21 +36,23 @@ export default {
         let splitOnDivider = element.value.split("---");
 
         //for each segment seperated by div macro
-        for (let i = 0; i < splitOnDivider.length; i++) {
+        for (let i = splitOnDivider.length-1; i > -1; i--) {
+
+          console.log(i)
 
           let block = splitOnDivider[i]
 
 
           if (block.length > 0) {
             //@ts-ignore
-            this.$emit('add_element', this.type, block);
+            this.$emit('add_element', this.index + 1, this.type, block);
           }
 
 
           //if on last element don't put divider.
-          if (i + 1 != splitOnDivider.length) {
+          if (i != 0) {
             //@ts-ignore
-            this.$emit('add_element', "divider")
+            this.$emit('add_element', this.index + 1, "divider")
           }
         }
 
@@ -71,9 +73,18 @@ export default {
       return this.$refs.textarea.value;
     }
   },
-  mounted(){
+  mounted() {
+    //@ts-ignore
     console.log(this.index, "mounted");
 
+    //@ts-ignore
+    this.auto_grow(this.$refs.textarea);
+  },
+  updated(){
+    //@ts-ignore
+    console.log(this.index, "updated");
+
+    //@ts-ignore
     this.auto_grow(this.$refs.textarea);
   }
 }

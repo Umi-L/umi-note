@@ -19,10 +19,18 @@ export default {
   },
 
   methods: {
-    add_element(index: number, type: string, data:any = undefined) {
+    add_element(index: number | string, type: string, data:any = undefined) {
 
-      //@ts-ignore -- odd bug that makes ts assume "this.sub_components" doesn't exist
-      this.sub_components.splice(index, 0, {[type]: data});
+      if (index == "end") {
+        //@ts-ignore -- odd bug that makes ts assume "this.sub_components" doesn't exist
+        this.sub_components.push({[type]: data});
+      }
+      else if (typeof index == "number") {
+        //@ts-ignore
+        this.sub_components.splice(index, 0, {[type]: data});
+      }
+
+      console.log(`added element at index ${index} of type '${type}' with data '${data}'`);
     },
 
     convert_element_to_element(type: string, index: number) {
@@ -35,6 +43,10 @@ export default {
     },
 
     remove_element(index:number){
+
+      //@ts-ignore -- see above
+      console.log([...this.sub_components]);
+
       //@ts-ignore -- see above
       this.sub_components.splice(index, 1);
 
@@ -68,7 +80,8 @@ export default {
               @open_context_menu="open_context_menu" :index="indx" :size="2"
               :value="component[Object.keys(component)[0]]"
               :type="Object.keys(component)[0]"
-              @remove_element="remove_element"></Text>
+              @remove_element="remove_element"
+              :ref="indx"></Text>
       </template>
 
       <template v-if="Object.keys(component)[0] === 'paragraph'">
@@ -76,16 +89,18 @@ export default {
               @open_context_menu="open_context_menu" :index="indx" :size="1"
               :value="component[Object.keys(component)[0]]"
               :type="Object.keys(component)[0]"
-              @remove_element="remove_element"></Text>
+              @remove_element="remove_element"
+              :ref="indx"></Text>
       </template>
 
       <template v-else-if="Object.keys(component)[0] === 'divider'">
-        <Divider :index="indx"></Divider>
+        <Divider :index="indx"
+                 :ref="indx"></Divider>
       </template>
     </template>
   </div>
 
-  <div id="new-element-area" @click="add_element('paragraph')"></div>
+  <div id="new-element-area" @click="add_element('end', 'paragraph')"></div>
 
 
 </template>
