@@ -1,6 +1,10 @@
+<script lang="ts">
+
+</script>
+
 <template>
   <button class="note-button">
-    click
+    <slot></slot>
   </button>
 </template>
 
@@ -22,6 +26,9 @@
 
   transition-duration: 0.2s;
 
+  font-size: 1rem;
+
+  padding: 0;
 }
 
 .note-button:hover {

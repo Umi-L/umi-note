@@ -62,6 +62,17 @@ export default {
 
       context_menu.style.top = (rect.bottom + window.scrollY) + "px";
       context_menu.style.left = (rect.right - context_menu.clientWidth) + "px";
+    },
+
+    pack_note(){
+      console.log(JSON.stringify({data: this.sub_components}));
+    },
+
+    fetch_component_data(){
+      for (let i = 0; i < this.sub_components.length; i++){
+        this.sub_components.
+        this.$refs[i].get_component_value();
+      }
     }
   }
 };
@@ -97,25 +108,58 @@ export default {
         <Divider :index="indx"
                  :ref="indx"></Divider>
       </template>
+
+      <template v-if="indx === sub_components.length-1">
+        {{this.pack_note()}}
+      </template>
     </template>
+
   </div>
 
-  <div id="new-element-area" @click="add_element('end', 'paragraph')"></div>
+  <div id="new-element-area" @click="add_element('end', 'paragraph')">
+    <p class="add-text">+</p>
+  </div>
 
 
 </template>
 
 <style>
 .note-body {
-  margin-left: 250px;
+  margin-left: calc(var(--sidebar-width) + var(--left-margin));
   display: flex;
   flex-direction: column;
   padding-right: 10px;
 }
 
 #new-element-area {
-  width: 100%;
+  display: flex;
+
+  margin-left: calc(var(--sidebar-width) + var(--left-margin));
+
+  width: calc(100% - var(--sidebar-width) - calc(var(--left-margin) * 2));
   height: 100px;
+
+  transition-duration: 0.3s;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+#new-element-area:hover{
+  background-color: rgba(0, 0, 0, 0.2);
+
+  border-radius: 10px ;
+}
+
+.add-text{
+  font-size: 50px;
+
+  color: var(--dark);
+
+  filter: brightness(150%);
 }
 </style>
     

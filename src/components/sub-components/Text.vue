@@ -68,7 +68,7 @@ export default {
       element.style.height = (element.scrollHeight) + "px";
     },
 
-    get_content(): string {
+    get_component_value(): string {
       //@ts-ignore
       return this.$refs.textarea.value;
     }

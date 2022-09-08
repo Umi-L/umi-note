@@ -1,9 +1,35 @@
 <script lang="ts">
 import NoteButton from "./NoteButton.vue";
+import { createDir, BaseDirectory, readDir, writeTextFile } from '@tauri-apps/api/fs';
 
 export default {
   components: {
     NoteButton
+  },
+  data() {
+    return {
+      // array of notes
+      notes: []
+    }
+  },
+  methods: {
+    async fetchNotes(){
+      // Create the `$APPDIR/notes` directory
+      await createDir('notes', { dir: BaseDirectory.App, recursive: true });
+      // Reads the `$APPDIR/users` directory recursively
+
+      await writeTextFile("notes/somenote.unote", "abcd", { dir: BaseDirectory.App})
+      await writeTextFile("notes/note2.2.2.unote", "abcd", { dir: BaseDirectory.App})
+
+      let entries = await readDir('notes', { dir: BaseDirectory.App, recursive: true });
+
+      console.log(entries);
+
+      this.notes = entries;
+    }
+  },
+  beforeMount(){
+    this.fetchNotes();
   }
 }
 </script>
@@ -12,29 +38,9 @@ export default {
 <template>
   <aside id="sidebar">
     <h3>Notes</h3>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
-    <note-button></note-button>
+    <template v-for="(note, indx) in notes">
+      <NoteButton>{{(note.name).replace(/\.[^/.]+$/, "")}}</NoteButton>
+    </template>
 
   </aside>
 </template>
@@ -49,7 +55,7 @@ export default {
   top: 0;
   bottom: 0;
 
-  width: 200px;
+  width: var(--sidebar-width);
 
   position: fixed;
 
