@@ -65,13 +65,18 @@ export default {
     },
 
     pack_note(){
+      console.log(this.sub_components);
+
       console.log(JSON.stringify({data: this.sub_components}));
     },
 
     fetch_component_data(){
+      //@ts-ignore
       for (let i = 0; i < this.sub_components.length; i++){
-        this.sub_components.
-        this.$refs[i].get_component_value();
+        //@ts-ignore
+        let _key = this.sub_components.keys[i];
+        //@ts-ignore
+        this.sub_components[_key] = this.$refs[i].get_component_value();
       }
     }
   }
@@ -81,11 +86,8 @@ export default {
 <template>
   <ContextMenu></ContextMenu>
 
-  <div class="note-body">
+  <div class="note-body" v-for="(component, indx) in sub_components" :key="indx">
     <!-- render component list -->
-
-    <template v-for="(component, indx) in sub_components">
-
       <template v-if="Object.keys(component)[0] === 'title'">
         <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
               @open_context_menu="open_context_menu" :index="indx" :size="2"
@@ -110,10 +112,8 @@ export default {
       </template>
 
       <template v-if="indx === sub_components.length-1">
-        {{this.pack_note()}}
+        {{pack_note()}}
       </template>
-    </template>
-
   </div>
 
   <div id="new-element-area" @click="add_element('end', 'paragraph')">
