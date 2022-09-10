@@ -1,6 +1,7 @@
 <script lang="ts">
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   props: {
     index: Number,
     size: Number,
@@ -11,11 +12,17 @@ export default {
 
   methods: {
     handle_text_change(event: any) {
+
+      if (this.index == undefined) {
+        console.log("index is undefined");
+        return;
+      }
+
       let element = event.target as HTMLTextAreaElement;
 
       //command to open context menu
       if (element.value.slice(-2) == "//") {
-        //@ts-ignore
+        
         this.$emit('open_context_menu', element);
       }
 
@@ -44,19 +51,19 @@ export default {
 
 
           if (block.length > 0) {
-            //@ts-ignore
+            
             this.$emit('add_element', this.index + 1, this.type, block);
           }
 
 
           //if on last element don't put divider.
           if (i != 0) {
-            //@ts-ignore
+            
             this.$emit('add_element', this.index + 1, "divider")
           }
         }
 
-        //@ts-ignore
+        
         this.$emit('remove_element', this.index);
       }
 
@@ -69,25 +76,25 @@ export default {
     },
 
     get_component_value(): string {
-      //@ts-ignore
+      
       return this.$refs.textarea.value;
     }
   },
   mounted() {
-    //@ts-ignore
+    
     console.log(this.index, "mounted");
 
-    //@ts-ignore
+    
     this.auto_grow(this.$refs.textarea);
   },
   updated(){
-    //@ts-ignore
+    
     console.log(this.index, "updated");
 
-    //@ts-ignore
+    
     this.auto_grow(this.$refs.textarea);
   }
-}
+});
 </script>
 
 
