@@ -2,8 +2,9 @@
 import ContextMenu from './ContextMenu.vue';
 import Text from "./sub-components/Text.vue"
 import Divider from "./sub-components/Divider.vue"
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
 
   components: {
     ContextMenu,
@@ -14,7 +15,7 @@ export default {
   data() {
     return {
       // array of component types and data can be used to reconstruct any note.
-      sub_components: [{"title":""}, {"paragraph":""}]
+      sub_components: [{component:"title", value:""}, {component:"paragraph", value:""}],
     }
   },
 
@@ -22,12 +23,10 @@ export default {
     add_element(index: number | string, type: string, data:any = undefined) {
 
       if (index == "end") {
-        //@ts-ignore -- odd bug that makes ts assume "this.sub_components" doesn't exist
-        this.sub_components.push({[type]: data});
+        this.sub_components.push({component: type, value: data});
       }
       else if (typeof index == "number") {
-        //@ts-ignore
-        this.sub_components.splice(index, 0, {[type]: data});
+        this.sub_components.splice(index, 0, {component: type, value: data});
       }
 
       console.log(`added element at index ${index} of type '${type}' with data '${data}'`);
@@ -35,19 +34,15 @@ export default {
 
     convert_element_to_element(type: string, index: number) {
 
-      //@ts-ignore -- see above
       console.log(`converting ${this.sub_components[index]} to ${type} at index ${index}`);
 
-      //@ts-ignore -- see above
-      this.sub_components[index] = {[type]:Object.values(this.sub_components[index])[0]};
+      this.sub_components[index] = {component: type, value:Object.values(this.sub_components[index])[0]};
     },
 
     remove_element(index:number){
 
-      //@ts-ignore -- see above
       console.log([...this.sub_components]);
 
-      //@ts-ignore -- see above
       this.sub_components.splice(index, 1);
 
       console.log(`removed element at ${index}`)
@@ -69,8 +64,6 @@ export default {
       this.$nextTick(() => {
         this.fetch_component_data();
 
-        //console.log(this.sub_components);
-
         console.log(JSON.stringify(
           {data: this.sub_components},
           function(k, v) { return v === undefined ? null : v; }
@@ -79,22 +72,19 @@ export default {
     },
 
     fetch_component_data(){
-      //@ts-ignore
       for (let i = 0; i < this.sub_components.length; i++){
 
         let keys = Object.keys(this.sub_components);
 
         console.log(this.$refs["notes"][i].get_component_value);
 
-        // //@ts-ignore
         // let _key = keys[i];
 
-        // //@ts-ignore
         // this.sub_components[_key] = this.$refs[i].get_component_value();
       }
     }
   }
-};
+});
 </script>
 
 <template>
@@ -102,25 +92,25 @@ export default {
 
   <div class="note-body" v-for="(component, indx) in sub_components" :key="indx" ref="notes">
     <!-- render component list -->
-      <template v-if="Object.keys(component)[0] === 'title'">
+      <template v-if="component.component === 'title'">
         <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
               @open_context_menu="open_context_menu" :index="indx" :size="2"
-              :value="component[Object.keys(component)[0]]"
-              :type="Object.keys(component)[0]"
+              :value="component.value"
+              :type="component.component"
               @remove_element="remove_element"
               ></Text>
       </template>
 
-      <template v-if="Object.keys(component)[0] === 'paragraph'">
+      <template v-if="component.component === 'paragraph'">
         <Text @convert_element_to_element="convert_element_to_element" @add_element="add_element"
               @open_context_menu="open_context_menu" :index="indx" :size="1"
-              :value="component[Object.keys(component)[0]]"
-              :type="Object.keys(component)[0]"
+              :value="component.value"
+              :type="component.component"
               @remove_element="remove_element"
               ></Text>
       </template>
 
-      <template v-else-if="Object.keys(component)[0] === 'divider'">
+      <template v-else-if="component.component === 'divider'">
         <Divider :index="indx"
                  ></Divider>
       </template>
