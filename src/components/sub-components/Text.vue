@@ -13,6 +13,8 @@ export default defineComponent({
   methods: {
     handle_text_change(event: any) {
 
+      this.$emit('value_change');
+
       if (this.index == undefined) {
         console.log("index is undefined");
         return;

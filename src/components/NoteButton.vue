@@ -1,9 +1,22 @@
 <script lang="ts">
 
+  import { defineComponent } from "vue";
+
+  export default defineComponent({
+    props: {
+      file: String,
+    },
+    methods: {
+      open_file() {
+        this.$emit('open_file', this.file);
+      },
+    },
+  })
+
 </script>
 
 <template>
-  <button class="note-button">
+  <button class="note-button" @click="open_file()">
     <slot></slot>
   </button>
 </template>

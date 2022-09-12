@@ -1,8 +1,9 @@
 <script lang="ts">
 import NoteButton from "./NoteButton.vue";
-import { createDir, BaseDirectory, readDir, writeTextFile } from '@tauri-apps/api/fs';
+import { createDir, BaseDirectory, readDir, writeTextFile, readTextFile } from '@tauri-apps/api/fs';
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   components: {
     NoteButton
   },
@@ -13,25 +14,34 @@ export default {
     }
   },
   methods: {
-    async fetchNotes(){
+    async fetchNotes() {
       // Create the `$APPDIR/notes` directory
-      await createDir('notes', { dir: BaseDirectory.App, recursive: true });
+      await createDir('notes', {dir: BaseDirectory.App, recursive: true});
       // Reads the `$APPDIR/users` directory recursively
 
-      await writeTextFile("notes/somenote.unote", "abcd", { dir: BaseDirectory.App})
-      await writeTextFile("notes/note2.2.2.unote", "abcd", { dir: BaseDirectory.App})
-
-      let entries = await readDir('notes', { dir: BaseDirectory.App, recursive: true });
+      let entries = await readDir('notes', {dir: BaseDirectory.App, recursive: true});
 
       console.log(entries);
 
       this.notes = entries;
+    },
+    async get_file_name(file: string) {
+      let file_data = await readTextFile("notes/" + file, {dir: BaseDirectory.App});
+
+      let parsed_file_data = JSON.parse(file_data);
+
+      return parsed_file_data.title;
+
+    },
+    open_file(file: string) {
+      this.$emit('open_file', file);
     }
   },
   beforeMount(){
     this.fetchNotes();
-  }
-}
+  },
+
+});
 </script>
 
 
@@ -39,7 +49,9 @@ export default {
   <aside id="sidebar">
     <h3>Notes</h3>
     <template v-for="(note, indx) in notes">
-      <NoteButton>{{(note.name).replace(/\.[^/.]+$/, "")}}</NoteButton>
+      <template v-if="note.name.match(/\.[0-9a-z]+$/i)[0] === '.unote'">
+        <NoteButton :file="note.path" @open_file="open_file">{{get_file_name(note.name)}}</NoteButton>
+      </template>
     </template>
 
   </aside>

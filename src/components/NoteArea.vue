@@ -3,6 +3,7 @@ import ContextMenu from './ContextMenu.vue';
 import Text from "./sub-components/Text.vue"
 import Divider from "./sub-components/Divider.vue"
 import { defineComponent } from "vue";
+import { readTextFile, writeTextFile, BaseDirectory } from '@tauri-apps/api/fs';
 
 export default defineComponent({
 
@@ -16,6 +17,7 @@ export default defineComponent({
     return {
       // array of component types and data can be used to reconstruct any note.
       sub_components: [{component:"title", value:""}, {component:"paragraph", value:""}],
+      current_file: "",
     }
   },
 
@@ -59,29 +61,74 @@ export default defineComponent({
       context_menu.style.left = (rect.right - context_menu.clientWidth) + "px";
     },
 
-    pack_note(){
+    async pack_note():Promise<string> {
 
-      this.$nextTick(() => {
+      await this.$nextTick(() => {
         this.fetch_component_data();
-
-        console.log(JSON.stringify(
-          {data: this.sub_components},
-          function(k, v) { return v === undefined ? null : v; }
-        ));
       });
+
+      let title = "untitled";
+
+      if (this.$refs.sub_components[0].get_component_value){
+        let title_value = this.$refs.sub_components[0].get_component_value();
+        if (typeof title_value === "string")
+        {
+          title = title_value;
+        }
+      }
+
+      return JSON.stringify(
+          {data: this.sub_components, title: title},
+          function(k, v) { return v === undefined ? null : v; }
+      )
+    },
+
+    async save(){
+      let note = await this.pack_note();
+
+      if (this.current_file == ""){
+        let now = new Date();
+        let dd = String(now.getDate()).padStart(2, '0');
+        let mm = String(now.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let yyyy = now.getFullYear();
+        let hh = String(now.getHours()).padStart(2, '0');
+        let min = String(now.getMinutes()).padStart(2, '0');
+        let sec = String(now.getSeconds()).padStart(2, '0');
+
+        this.current_file = `notes/${sec}-${min}-${hh}-${dd}-${mm}-${yyyy}.unote`;;
+      }
+
+      writeTextFile(this.current_file, note, {dir: BaseDirectory.App});
     },
 
     fetch_component_data(){
       for (let i = 0; i < this.sub_components.length; i++){
 
-        let keys = Object.keys(this.sub_components);
 
-        console.log(this.$refs["notes"][i].get_component_value);
-
-        // let _key = keys[i];
-
-        // this.sub_components[_key] = this.$refs[i].get_component_value();
+        if (this.$refs.sub_components[i].get_component_value) {
+          this.sub_components[i]["value"] = this.$refs.sub_components[i].get_component_value();
+        }
+        else{
+          this.sub_components[i]["value"] = null;
+        }
       }
+    },
+
+    open_file(file: string) {
+      readTextFile(file).then((data) => {
+        console.log(data);
+
+        this.sub_components = [];
+
+        this.$nextTick(() => {
+          this.current_file = file;
+          this.sub_components = JSON.parse(data).data;
+        });
+      });
+    },
+
+    sub_component_updated(){
+      this.save();
     }
   }
 });
@@ -90,15 +137,17 @@ export default defineComponent({
 <template>
   <ContextMenu></ContextMenu>
 
-  <div class="note-body" v-for="(component, indx) in sub_components" :key="indx" ref="notes">
+  <div class="note-body">
     <!-- render component list -->
+    <template v-for="(component, indx) in sub_components" :key="indx">
       <template v-if="component.component === 'title'">
         <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
               @open_context_menu="open_context_menu" :index="indx" :size="2"
               :value="component.value"
               :type="component.component"
               @remove_element="remove_element"
-              ></Text>
+              @value_change="sub_component_updated"
+              ref="sub_components"></Text>
       </template>
 
       <template v-if="component.component === 'paragraph'">
@@ -107,17 +156,15 @@ export default defineComponent({
               :value="component.value"
               :type="component.component"
               @remove_element="remove_element"
-              ></Text>
+              @value_change="sub_component_updated"
+              ref="sub_components"></Text>
       </template>
 
       <template v-else-if="component.component === 'divider'">
-        <Divider :index="indx"
-                 ></Divider>
+        <Divider :index="indx" ref="sub_components"
+        ></Divider>
       </template>
-
-      <template v-if="indx === sub_components.length-1">
-        {{pack_note()}}
-      </template>
+    </template>
   </div>
 
   <div id="new-element-area" @click="add_element('end', 'paragraph')">
@@ -166,4 +213,3 @@ export default defineComponent({
   filter: brightness(150%);
 }
 </style>
-    
