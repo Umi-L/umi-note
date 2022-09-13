@@ -13,6 +13,8 @@ export default defineComponent({
     Divider
   },
 
+  emits: ["note_change"],
+
   data() {
     return {
       // array of component types and data can be used to reconstruct any note.
@@ -67,13 +69,15 @@ export default defineComponent({
         this.fetch_component_data();
       });
 
-      let title = "untitled";
+      let title = "Untitled";
 
-      if (this.$refs.sub_components[0].get_component_value){
-        let title_value = this.$refs.sub_components[0].get_component_value();
-        if (typeof title_value === "string")
-        {
-          title = title_value;
+      if (this.$refs.sub_components[0]){
+        if (this.$refs.sub_components[0].get_component_value){
+          let title_value = this.$refs.sub_components[0].get_component_value();
+          if (typeof title_value === "string" && title_value.length > 0)
+          {
+            title = title_value;
+          }
         }
       }
 
@@ -99,11 +103,15 @@ export default defineComponent({
       }
 
       writeTextFile(this.current_file, note, {dir: BaseDirectory.App});
+
+      this.$emit("note_change")
     },
 
     fetch_component_data(){
       for (let i = 0; i < this.sub_components.length; i++){
 
+        if (!this.$refs.sub_components[i])
+          continue
 
         if (this.$refs.sub_components[i].get_component_value) {
           this.sub_components[i]["value"] = this.$refs.sub_components[i].get_component_value();

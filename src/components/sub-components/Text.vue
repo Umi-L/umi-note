@@ -10,11 +10,10 @@ export default defineComponent({
     type: String
   },
 
+  emits: ["add_element", "remove_element", "open_context_menu", "value_change"],
+
   methods: {
     handle_text_change(event: any) {
-
-      this.$emit('value_change');
-
       if (this.index == undefined) {
         console.log("index is undefined");
         return;
@@ -44,6 +43,8 @@ export default defineComponent({
       if (dividerMacroFound){
         let splitOnDivider = element.value.split("---");
 
+        console.log(splitOnDivider)
+
         //for each segment seperated by div macro
         for (let i = splitOnDivider.length-1; i > -1; i--) {
 
@@ -52,11 +53,9 @@ export default defineComponent({
           let block = splitOnDivider[i]
 
 
-          if (block.length > 0) {
-            
-            this.$emit('add_element', this.index + 1, this.type, block);
+          if (block.length != 0){
+           this.$emit('add_element', this.index + 1, this.type, block);
           }
-
 
           //if on last element don't put divider.
           if (i != 0) {
@@ -65,11 +64,13 @@ export default defineComponent({
           }
         }
 
-        
         this.$emit('remove_element', this.index);
+        
       }
 
       this.auto_grow(element)
+
+      this.$emit('value_change');
     },
 
     auto_grow(element: any) {
@@ -83,17 +84,9 @@ export default defineComponent({
     }
   },
   mounted() {
-    
-    console.log(this.index, "mounted");
-
-    
     this.auto_grow(this.$refs.textarea);
   },
   updated(){
-    
-    console.log(this.index, "updated");
-
-    
     this.auto_grow(this.$refs.textarea);
   }
 });

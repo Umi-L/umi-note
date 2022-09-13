@@ -21,8 +21,6 @@ export default defineComponent({
 
       let entries = await readDir('notes', {dir: BaseDirectory.App, recursive: true});
 
-      console.log(entries);
-
       this.notes = entries;
     },
     async get_file_name(file: string) {
@@ -50,7 +48,7 @@ export default defineComponent({
     <h3>Notes</h3>
     <template v-for="(note, indx) in notes">
       <template v-if="note.name.match(/\.[0-9a-z]+$/i)[0] === '.unote'">
-        <NoteButton :file="note.path" @open_file="open_file">{{get_file_name(note.name)}}</NoteButton>
+        <NoteButton :file="note.path" @open_file="open_file" :name="get_file_name(note.name)"></NoteButton>
       </template>
     </template>
 

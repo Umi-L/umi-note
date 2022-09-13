@@ -3,21 +3,36 @@
   import { defineComponent } from "vue";
 
   export default defineComponent({
+    emits:["open_file"],
     props: {
       file: String,
+      name: Promise<string>    
+    },
+    data(){
+      return {
+        name_resolved: "loading..."
+      }
     },
     methods: {
       open_file() {
         this.$emit('open_file', this.file);
       },
     },
+    mounted() {
+      this.name.then((name)=>{this.name_resolved = name})
+    },
+    updated(){
+      this.name.then((name)=>{
+        this.name_resolved = name;
+      })
+    }
   })
 
 </script>
 
 <template>
   <button class="note-button" @click="open_file()">
-    <slot></slot>
+    {{name_resolved}}
   </button>
 </template>
 

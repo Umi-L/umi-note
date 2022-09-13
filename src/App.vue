@@ -15,14 +15,17 @@ export default defineComponent({
       console.log(file);
       this.$refs.NoteArea.open_file(file);
     },
+    note_change(){
+      this.$refs.Sidebar.fetchNotes();
+    }
   },
 });
 </script>
 
 
 <template>
-  <sidebar @open_file="open_file"></sidebar>
-  <NoteArea ref="NoteArea"></NoteArea>
+  <Sidebar ref="Sidebar" @open_file="open_file"></Sidebar>
+  <NoteArea ref="NoteArea" @note_change="note_change"></NoteArea>
 </template>
 
 <style>
