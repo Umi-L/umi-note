@@ -28,11 +28,33 @@ export default defineComponent({
 
       let parsed_file_data = JSON.parse(file_data);
 
-      return parsed_file_data.title;
+      let name = parsed_file_data.title;
+
+      if (!name)
+        name = "Untitled";
+
+      return name;
 
     },
     open_file(file: string) {
       this.$emit('open_file', file);
+    },
+    create_new_note(){
+      console.log("newNote");
+
+      let now = new Date();
+      let dd = String(now.getDate()).padStart(2, '0');
+      let mm = String(now.getMonth() + 1).padStart(2, '0'); //January is 0!
+      let yyyy = now.getFullYear();
+      let hh = String(now.getHours()).padStart(2, '0');
+      let min = String(now.getMinutes()).padStart(2, '0');
+      let sec = String(now.getSeconds()).padStart(2, '0');
+
+      let filename = `notes/${sec}-${min}-${hh}-${dd}-${mm}-${yyyy}.unote`;
+
+      writeTextFile(filename, "{}", {dir: BaseDirectory.App});
+
+      this.fetchNotes();
     }
   },
   beforeMount(){
@@ -52,11 +74,40 @@ export default defineComponent({
       </template>
     </template>
 
+    <button class="note-add" @click="create_new_note()">+</button>
+
   </aside>
 </template>
 
 
 <style>
+
+.note-add{
+  height: 3em;
+  min-height: 3em;
+  width: 100%;
+  padding-top: 1em;
+  padding-bottom: 1em;
+
+  background-color: var(--dark);
+
+  border: none;
+
+  border-top: 1px solid var(--light1);
+  border-bottom: 1px solid var(--light1); 
+
+  color: var(--text);
+
+  transition-duration: 0.2s;
+
+  font-size: 1rem;
+
+  padding: 0;
+}
+.note-add:hover{
+  background-color: var(--light1);
+}
+
 #sidebar {
   display: flex;
   flex-direction: column;

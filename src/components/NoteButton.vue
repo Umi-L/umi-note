@@ -39,6 +39,8 @@
 <style>
 .note-button {
   height: 3em;
+  min-height: 3em;
+
   width: 100%;
   padding-top: 1em;
   padding-bottom: 1em;

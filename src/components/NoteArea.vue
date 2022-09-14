@@ -18,7 +18,8 @@ export default defineComponent({
   data() {
     return {
       // array of component types and data can be used to reconstruct any note.
-      sub_components: [{component:"title", value:""}, {component:"paragraph", value:""}],
+      default_sub_components: [{component:"title", value:""}, {component:"paragraph", value:""}],
+      sub_components: [],
       current_file: "",
     }
   },
@@ -99,7 +100,7 @@ export default defineComponent({
         let min = String(now.getMinutes()).padStart(2, '0');
         let sec = String(now.getSeconds()).padStart(2, '0');
 
-        this.current_file = `notes/${sec}-${min}-${hh}-${dd}-${mm}-${yyyy}.unote`;;
+        this.current_file = `notes/${sec}-${min}-${hh}-${dd}-${mm}-${yyyy}.unote`;
       }
 
       writeTextFile(this.current_file, note, {dir: BaseDirectory.App});
@@ -123,19 +124,39 @@ export default defineComponent({
     },
 
     open_file(file: string) {
-      readTextFile(file).then((data) => {
-        console.log(data);
+      readTextFile(file).then((text_data) => {
+        console.log(text_data);
 
         this.sub_components = [];
 
         this.$nextTick(() => {
           this.current_file = file;
-          this.sub_components = JSON.parse(data).data;
+
+          try{
+            let components = JSON.parse(text_data).data;
+
+            if (components){
+              this.sub_components = components;
+            }
+            else{
+              this.sub_components = this.default_sub_components;
+            }
+          }
+          catch (error){
+            console.log("parsing error!")
+            console.error(error)
+          }
+
+          if (this.sub_components.length == 0){
+            this.sub_components = this.default_sub_components;
+          }
+          console.log(this.default_sub_components);
         });
       });
     },
 
     sub_component_updated(){
+      console.log("sub update")
       this.save();
     }
   }
