@@ -219,7 +219,11 @@ export default defineComponent({
 }
 
 .component-container:hover .context-button{
-  opacity: 100%;
+  opacity: 50%;
+}
+
+.component-container:hover .context-button .context-button-image{
+  transform: rotate(0deg) scale(1);
 }
 
 .note-body {
