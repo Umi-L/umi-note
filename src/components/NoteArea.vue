@@ -2,12 +2,14 @@
 import ContextMenu from './ContextMenu.vue';
 import Text from "./sub-components/Text.vue"
 import Divider from "./sub-components/Divider.vue"
+import ContextButton from "./ContextButton.vue"
 import { defineComponent } from "vue";
 import { readTextFile, writeTextFile, BaseDirectory } from '@tauri-apps/api/fs';
 
 export default defineComponent({
 
   components: {
+    ContextButton,
     ContextMenu,
     Text,
     Divider
@@ -169,34 +171,39 @@ export default defineComponent({
   <div class="note-body">
     <!-- render component list -->
     <template v-for="(component, indx) in sub_components" :key="indx">
-      <template v-if="component.component === 'title'">
-        <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
-              @open_context_menu="open_context_menu" :index="indx" :size="2"
-              :value="component.value"
-              :type="component.component"
-              @remove_element="remove_element"
-              @value_change="sub_component_updated"
-              ref="sub_components"></Text>
-      </template>
 
-      <template v-if="component.component === 'paragraph'">
-        <Text @convert_element_to_element="convert_element_to_element" @add_element="add_element"
-              @open_context_menu="open_context_menu" :index="indx" :size="1"
-              :value="component.value"
-              :type="component.component"
-              @remove_element="remove_element"
-              @value_change="sub_component_updated"
-              ref="sub_components"></Text>
-      </template>
+      <div class="component-container">
+        <ContextButton></ContextButton>
 
-      <template v-else-if="component.component === 'divider'">
-        <Divider :index="indx" ref="sub_components"
-        ></Divider>
-      </template>
+        <template v-if="component.component === 'title'">
+          <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
+                @open_context_menu="open_context_menu" :index="indx" :size="2"
+                :value="component.value"
+                :type="component.component"
+                @remove_element="remove_element"
+                @value_change="sub_component_updated"
+                ref="sub_components"></Text>
+        </template>
+
+        <template v-if="component.component === 'paragraph'">
+          <Text @convert_element_to_element="convert_element_to_element" @add_element="add_element"
+                @open_context_menu="open_context_menu" :index="indx" :size="1"
+                :value="component.value"
+                :type="component.component"
+                @remove_element="remove_element"
+                @value_change="sub_component_updated"
+                ref="sub_components"></Text>
+        </template>
+
+        <template v-else-if="component.component === 'divider'">
+          <Divider :index="indx" ref="sub_components"
+          ></Divider>
+        </template>
+      </div>
     </template>
   </div>
 
-  <div id="new-element-area" @click="add_element('end', 'paragraph')">
+  <div v-if="current_file != ''" id="new-element-area" @click="add_element('end', 'paragraph')">
     <p class="add-text">+</p>
   </div>
 
@@ -204,6 +211,17 @@ export default defineComponent({
 </template>
 
 <style>
+.component-container{
+  display: flex;
+
+  flex-direction: row;  
+  align-items: center;
+}
+
+.component-container:hover .context-button{
+  opacity: 100%;
+}
+
 .note-body {
   margin-left: calc(var(--sidebar-width) + var(--left-margin));
   display: flex;
@@ -232,6 +250,8 @@ export default defineComponent({
   background-color: rgba(0, 0, 0, 0.2);
 
   border-radius: 10px ;
+
+  margin-top: 20px;
 }
 
 .add-text{
