@@ -173,7 +173,7 @@ export default defineComponent({
     <template v-for="(component, indx) in sub_components" :key="indx">
 
       <div class="component-container">
-        <ContextButton></ContextButton>
+        <ContextButton :index="indx"></ContextButton>
 
         <template v-if="component.component === 'title'">
           <Text placeholder="Untitled" @convert_element_to_element="convert_element_to_element" @add_element="add_element"
@@ -216,6 +216,14 @@ export default defineComponent({
 
   flex-direction: row;  
   align-items: center;
+
+  transition-duration: 0.2s;
+
+  border-left: dashed transparent 1px;
+}
+
+.component-container:hover{
+  border-left: solid rgba(255, 255, 255, 0.2) 1px;
 }
 
 .component-container:hover .context-button{

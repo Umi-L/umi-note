@@ -1,7 +1,23 @@
+<script lang="ts">
+	
+	import { defineComponent } from "vue"; 
+
+	export default defineComponent({
+		props: {
+			index: Number,
+		},
+		methods: {
+			context_button_click(){
+				console.log("boom, " + this.index);
+			}
+		}
+	})
+</script>
+
 <template>
-	<button class="context-button">
-    <img src="src/assets/menu_lines.svg" class="context-button-image">
-  </button>
+	<button class="context-button" @click="context_button_click()">
+    	<img src="src/assets/menu_lines.svg" class="context-button-image">
+  	</button>
 </template>
 
 <style>
@@ -12,14 +28,14 @@
 		width: 40px;
 		height: 40px;
 
-    padding: 0;
+    	padding: 0;
 
 		margin-right: 10px;
 
 		background-color: rgba(0,0,0,0);
 		outline: 0;
 
-    border: 0;
+    	border: 0;
 	}
 
 	.context-button-image{

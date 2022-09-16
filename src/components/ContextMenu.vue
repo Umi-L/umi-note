@@ -1,9 +1,21 @@
+<script lang="ts">
+  import { defineComponent } from "vue"
+  import Menu from "./Menu.vue"
+
+  export default defineComponent({
+    components: {
+      Menu,
+    },
+    data(){
+      return {
+        options: ["delete", "convert to"]
+      }
+    }
+  })
+</script>
+
 <template>
-  <div id="context-menu" class="hide">
-    cancer
-  </div>
-
-
+  <Menu id="context-menu" :options="options"></Menu>
 </template>
 
 <style>
@@ -15,7 +27,7 @@
   display: none;
 }
 
-#context-menu {
+/*#context-menu {
   position: absolute;
   width: 100px;
   height: 250px;
@@ -23,5 +35,5 @@
 
   outline: 2px solid var(--light1);
   border-radius: 5px;
-}
+}*/
 </style>
