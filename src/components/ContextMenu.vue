@@ -8,7 +8,7 @@
     },
     data(){
       return {
-        options: ["delete", "convert to"]
+        options: ["Delete", "Convert to"]
       }
     }
   })

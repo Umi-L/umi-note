@@ -256,14 +256,15 @@ export default defineComponent({
   justify-content: center;
 
   cursor: pointer;
+
+  margin-top: 20px;
+
 }
 
 #new-element-area:hover{
   background-color: rgba(0, 0, 0, 0.2);
 
   border-radius: 10px ;
-
-  margin-top: 20px;
 }
 
 .add-text{
