@@ -8,7 +8,18 @@
     },
     data(){
       return {
-        options: ["Delete", "Convert to"]
+        options: [
+          {
+            name:"Delete", 
+            icon: "fa-solid fa-trash", 
+            callback: ()=>{console.log("delete")}
+          },
+          {
+            name:"Convert To", 
+            icon: "fa-solid fa-repeat",
+            callback: ()=>{console.log("convert")}
+          },
+        ]
       }
     }
   })
